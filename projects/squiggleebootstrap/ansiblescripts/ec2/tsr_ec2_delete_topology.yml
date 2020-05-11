@@ -1,0 +1,15 @@
+- hosts: localhost
+  connection: local
+  gather_facts: True
+  vars:
+    ec2_access_key: "AKIAIQWKLMSGKA7YCSLA"
+    ec2_secret_key: "PiFhUX0D6sh863fS9Bd0kRYeFKeq1YpjfV+a7Cil"
+#    cluster: "TSR_EC2_CLUST"
+    keypair: "ec2tsrserver"    
+# Example delete topology for a single instance 
+#    topology: [{"ec2_id":"i-48a892b3","region":"us-east-1","image":"ami-76817c1e","ec2_ip_address":"54.174.172.254"}]
+  tasks:
+    - name: Delete Server 
+      local_action: ec2 state='absent' instance_ids="{{ item['ec2_id'] }}" region="{{ item['region'] }}"
+      with_items: topology      
+#    - pause: minutes=1

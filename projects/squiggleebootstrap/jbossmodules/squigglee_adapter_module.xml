@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.0" name="com.squigglee.adapter">
+    <resources>
+        <resource-root path="squiggleeadapter.jar" />
+        <resource-root path="squiggleecore.jar" />
+        <resource-root path="squiggleeext.jar" />
+        <resource-root path="squiggleerest.jar" />
+        <resource-root path="squiggleembb.jar" />
+        <resource-root path="squiggleecoord.jar" />
+    </resources>
+	<dependencies>
+		<module name="org.joda.time"/>
+		<module name="org.apache.avro"/>
+		<module name="com.google.guava"/>
+		<module name="org.jboss.teiid.translator.jdbc"/>
+		<module name="org.jboss.teiid"/>
+		<module name="org.apache.httpcomponents"/>
+		<module name="org.jboss.resteasy.resteasy-jaxrs"/>
+		<module name="org.jboss.resteasy.resteasy-jaxb-provider"/>
+		<module name="org.jboss.teiid.admin"/>
+		<module name="org.jboss.teiid.common-core"/>
+		<module name="org.jboss.teiid.client"/>
+		<module name="org.jboss.teiid.api"/>
+        <module name="org.apache.log4j"/>
+        <module name="org.apache.commons.math" />
+		<module name="org.dom4j"/>
+		<module name="org.codehaus.jackson.jackson-jaxrs"/>
+		<module name="javax.api"/>
+		<module name="javax.ws.rs.api"/>
+		<module name="org.apache.zookeeper" />
+    </dependencies>
+</module>

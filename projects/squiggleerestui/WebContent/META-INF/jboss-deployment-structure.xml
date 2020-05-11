@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+	<deployment>
+	    <dependencies>
+	      <module name="com.squigglee.adapter" />
+	      <module name="org.joda.time" />
+	      <module name="org.apache.avro" />
+	      <module name="org.apache.commons.math" />
+	      <module name="org.apache.commons.lang3" />
+	      <module name="org.apache.httpcomponents" />
+	      <module name="org.jboss.resteasy.resteasy-jaxrs"/>
+		  <module name="org.jboss.resteasy.resteasy-jaxb-provider"/>
+		  <module name="org.jboss.resteasy.resteasy-jackson-provider"/>
+		  <module name="org.jboss.resteasy.resteasy-jettison-provider"/>
+		  <module name="org.codehaus.jackson.jackson-jaxrs"/>
+	      <module name="javaee.api"/>
+	    </dependencies>
+    </deployment>
+</jboss-deployment-structure>

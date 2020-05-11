@@ -1,0 +1,15 @@
+- hosts: tag_ring_position_{{logicalNumber}}:&tag_cluster_{{cluster}}
+  user: ec2-user 
+  vars:
+#    zk_version: "zookeeper-3.4.6"
+    zk_version: "zookeeper-3.5.0-alpha"
+    cluster: "TSR_EC2_CLUST"
+  tasks:
+     - debug: msg="Starting Zookeeper at Logical Node = {{logicalNumber}}"
+     - shell: "sudo ./zkServer.sh stop"
+       args:
+         chdir: /opt/zkoverlay/{{ zk_version }}/bin
+       ignore_errors: True
+     - shell: "sudo ./zkServer.sh start"
+       args:
+         chdir: /opt/zkoverlay/{{ zk_version }}/bin

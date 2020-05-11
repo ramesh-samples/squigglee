@@ -1,0 +1,14 @@
+- hosts: tag_ring_position_{{logicalNumber}} 
+  gather_facts: True
+  user: ec2-user 
+  vars:
+    ec2_access_key: "AKIAIQWKLMSGKA7YCSLA"
+    ec2_secret_key: "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"
+    cluster: "TSR_EC2_CLUST"
+    cassandra_version: "apache-cassandra-2.1.2"
+#    cassandra_version: "apache-cassandra-2.0.9"
+  tasks:
+#    - command: sudo /opt/{{ cassandra_version }}/bin/cqlsh {{ hostvars[inventory_hostname]['ec2_private_ip_address'] }} 9042 -f ./{{ schemaFile }} 
+    - command: sudo /opt/{{ cassandra_version }}/bin/nodetool cleanup 
+    - command: sudo /opt/{{ cassandra_version }}/bin/nodetool repair -pr 
+     

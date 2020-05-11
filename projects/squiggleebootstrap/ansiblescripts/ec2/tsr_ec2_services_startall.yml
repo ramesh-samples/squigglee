@@ -1,0 +1,39 @@
+- hosts: tag_cluster_{{cluster}} 
+  user: ec2-user 
+  vars:
+  tasks:
+     - shell: "ps aux | grep com.squigglee.jobs.task.N[o]deUpdateTask | awk {'print $2'} | xargs sudo kill -9"
+       sudo: yes
+       ignore_errors: True  
+       
+     - shell: "nohup java -cp squiggleejobs.jar -Dlog4j.configuration=file:log4j.properties -DtsrPropFile=LocalNodeProperties.config com.squigglee.jobs.task.NodeUpdateTask &"
+       args:
+         chdir: /opt/tsr/services
+       sudo: yes
+     
+     - shell: "ps aux | grep com.squigglee.jobs.launchers.I[n]dexTaskLauncher | awk {'print $2'} | xargs sudo kill -9"
+       sudo: yes
+       ignore_errors: True  
+
+     - shell: "nohup java -cp squiggleejobs.jar -Dlog4j.configuration=file:log4j.properties -DtsrPropFile=LocalNodeProperties.config com.squigglee.jobs.launchers.IndexTaskLauncher &"
+       args:
+         chdir: /opt/tsr/services
+       sudo: yes
+     
+     - shell: "ps aux | grep com.squigglee.jobs.launchers.O[v]erlayTaskLauncher | awk {'print $2'} | xargs sudo kill -9"
+       sudo: yes
+       ignore_errors: True  
+       
+     - shell: "nohup java -cp squiggleejobs.jar -Dlog4j.configuration=file:log4j.properties -DtsrPropFile=LocalNodeProperties.config com.squigglee.jobs.launchers.OverlayTaskLauncher &"
+       args:
+         chdir: /opt/tsr/services
+       sudo: yes
+     
+     - shell: "ps aux | grep com.squigglee.jobs.launchers.P[i]ngTaskLauncher | awk {'print $2'} | xargs sudo kill -9"
+       sudo: yes
+       ignore_errors: True  
+       
+     - shell: "nohup java -cp squiggleejobs.jar -Dlog4j.configuration=file:log4j.properties -DtsrPropFile=LocalNodeProperties.config com.squigglee.jobs.launchers.PingTaskLauncher &"
+       args:
+         chdir: /opt/tsr/services
+       sudo: yes

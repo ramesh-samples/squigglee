@@ -1,0 +1,67 @@
+#- hosts: localhost
+#  connection: local
+#  gather_facts: True    
+#  tasks:
+#    - name: Refresh dynamic inventory cache 
+#      local_action: command hosts/ec2.py --refresh-cache
+#    - name: Refresh seed list
+#      local_action: shell hosts/ec2.py --list | python seeds.py
+#- hosts: ec2 
+- hosts: tag_ring_position_{{logicalNumber}}:&tag_cluster_{{cluster}}
+  gather_facts: True
+  user: ec2-user 
+  vars:
+    ec2_access_key: "AKIAIQWKLMSGKA7YCSLA"
+    ec2_secret_key: "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"
+    cluster: "TSR_EC2_CLUST"
+    dataVolName: "/data" 
+    dataVolMount: "/dev/sdb"
+#    dataVolSize: 10 
+#    logVolName: "/log"
+#    logVolMount: "/dev/sdc"
+#    logVolSize: 10 
+  tasks:
+# Configure Data Volumes
+    - debug: msg="Configuring Volumes at Logical Node = {{logicalNumber}}"
+#    - debug: var=logicalNumber  
+    - stat: path="{{ dataVolName }}" 
+      register: dataVol 
+      sudo: yes   
+#    - action: shell expr {{hostvars[inventory_hostname]['ec2_tag_storage']}} \/ 5 \* 4
+#      register: dataVolSizeAdjusted
+#    - debug: msg="Data Volume Size = {{dataVolSizeAdjusted.stdout}}"
+#    - action: shell expr {{hostvars[inventory_hostname]['ec2_tag_storage']}} \/ 5 
+#      register: logVolSizeAdjusted
+#    - debug: msg="Log Volume Size = {{logVolSizeAdjusted.stdout}}"
+#    - name: Add Volume /dev/sdb   
+#      ec2_vol: instance="{{ hostvars[inventory_hostname]['ec2_id'] }}" volume_type="gp2" volume_size="{{dataVolSizeAdjusted.stdout}}" device_name="{{dataVolMount}}" region="{{ hostvars[inventory_hostname]['ec2_region'] }}" zone="{{ hostvars[inventory_hostname]['ec2_placement'] }}" aws_access_key="{{ ec2_access_key }}" aws_secret_key="{{ ec2_secret_key }}"
+#      when: (dataVol.stat.isdir is not defined or dataVol.stat.isdir != true)
+    - command: sudo mkdir -p {{ dataVolName }} 
+      when: (dataVol.stat.isdir is not defined or dataVol.stat.isdir != true) 
+    - command: sudo mkfs -t ext4 {{ dataVolMount }}
+      when: (dataVol.stat.isdir is not defined or dataVol.stat.isdir != true) 
+      ignore_errors: True
+    - command: sudo mount {{ dataVolMount }} {{ dataVolName }} 
+      when: (dataVol.stat.isdir is not defined or dataVol.stat.isdir != true) 
+    - command: sudo chown -R ec2-user:ec2-user /data
+      when: (dataVol.stat.isdir is not defined or dataVol.stat.isdir != true)  
+    - lineinfile: dest=/etc/fstab line='{{ dataVolMount }}  {{ dataVolName }}  ext4  defaults,nofail  0  2' state=present
+      sudo: yes
+      when: (dataVol.stat.isdir is not defined or dataVol.stat.isdir != true)         
+#    - stat: path="{{ logVolName }}" 
+#      register: logVol 
+#      sudo: yes   
+#    - name: Add Volume /dev/sdc          
+#      ec2_vol: instance="{{ hostvars[inventory_hostname]['ec2_id'] }}" volume_type="gp2" volume_size="{{logVolSizeAdjusted.stdout}}" device_name="{{logVolMount}}" region="{{ hostvars[inventory_hostname]['ec2_region'] }}" zone="{{ hostvars[inventory_hostname]['ec2_placement'] }}" aws_access_key="{{ ec2_access_key }}" aws_secret_key="{{ ec2_secret_key }}" 
+#      when: (logVol.stat.isdir is not defined or logVol.stat.isdir != true)      
+#    - command: sudo mkdir -p {{ logVolName }} 
+#      when: (logVol.stat.isdir is not defined or logVol.stat.isdir != true)
+#    - command: sudo mkfs -t ext4 {{ logVolMount }}
+#      when: (logVol.stat.isdir is not defined or logVol.stat.isdir != true)
+#    - command: sudo mount {{ logVolMount }} {{ logVolName }} 
+#      when: (logVol.stat.isdir is not defined or logVol.stat.isdir != true)
+#    - command: sudo chown -R ec2-user:ec2-user /log
+#      when: (logVol.stat.isdir is not defined or logVol.stat.isdir != true) 
+#    - lineinfile: dest=/etc/fstab line='{{ logVolMount }}  {{ logVolName }}  ext4  defaults,nofail  0  2' state=present
+#      sudo: yes 
+#      when: (logVol.stat.isdir is not defined or logVol.stat.isdir != true) 

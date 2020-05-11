@@ -1,0 +1,24 @@
+- hosts: tag_is_bootstrap_node_yes:&tag_ring_position_{{logicalNumber}}:&tag_cluster_{{cluster}}
+  gather_facts: True
+  user: ec2-user 
+  vars:
+    ec2_access_key: "AKIAIQWKLMSGKA7YCSLA"
+    ec2_secret_key: "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"
+    cluster: "TSR_EC2_CLUST"
+    cassandra_version: "apache-cassandra-2.1.2"
+#    cassandra_version: "apache-cassandra-2.0.9"
+    schemaFile: "configureMasterSchemaEC2MultiRegion.cql"
+#    schemaFile: "configureMasterSchema.cql"
+  tasks:
+    - debug: msg="Configuring Master Schema at Logical Node = {{logicalNumber}}"
+    - pause: seconds=10
+    - command: sudo /opt/{{ cassandra_version }}/bin/cqlsh {{ hostvars[inventory_hostname]['ec2_private_ip_address'] }} 9042 -e "DESCRIBE KEYSPACE ks_md"
+      ignore_errors: true
+      register: ks_md
+#    - debug: var=ks_md 
+    - copy: src="./{{ schemaFile }}" dest="./{{ schemaFile }}" force="yes" owner="ec2-user" group="ec2-user" mode="0644" 
+      when: ks_md.stderr.find("'ks_md' not found") != -1 
+      sudo: yes     
+    - command: sudo /opt/{{ cassandra_version }}/bin/cqlsh {{ hostvars[inventory_hostname]['ec2_private_ip_address'] }} 9042 -f ./{{ schemaFile }} 
+      when: ks_md.stderr.find("'ks_md' not found") != -1 
+      ignore_errors: true

@@ -1,0 +1,18 @@
+#- hosts: localhost
+#  connection: local
+#  gather_facts: True    
+#  tasks:
+#    - name: Refresh dynamic inventory cache 
+#      local_action: command hosts/ec2.py --refresh-cache
+#    - name: Refresh seed list
+#      local_action: shell hosts/ec2.py --list | python seeds.py
+- hosts: tag_is_bootstrap_node_yes:&tag_ring_position_{{logicalNumber}}:&tag_cluster_{{cluster}} 
+  user: ec2-user 
+  vars:
+  tasks:
+     - debug: msg="Starting Configuration Service at Logical Node = {{logicalNumber}}"
+     - shell: "ps aux | grep com.squigglee.jobs.launchers.C[o]nfigurationTaskLauncher | awk {'print $2'} | xargs sudo kill -9"
+       ignore_errors: True  
+     - shell: "nohup java -cp squiggleejobs.jar -Dlog4j.configuration=file:///home/ec2-user/ansible/log4j.properties -DtsrPropFile=/opt/tsr/services/LocalNodeProperties.config com.squigglee.jobs.launchers.ConfigurationTaskLauncher &"
+       args:
+         chdir: /home/ec2-user/ansible

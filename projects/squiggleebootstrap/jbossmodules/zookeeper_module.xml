@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.0" name="org.apache.zookeeper">
+    <resources>
+        <resource-root path="zookeeper-3.5.0-alpha.jar" />
+        <resource-root path="slf4j-api-1.7.5.jar" />
+        <resource-root path="slf4j-log4j12-1.7.5.jar" />
+        <resource-root path="servlet-api-2.5-20081211.jar" />
+        <resource-root path="netty-3.7.0.Final.jar" />
+        <resource-root path="jline-2.11.jar" />
+        <resource-root path="javacc.jar" />
+        <resource-root path="jackson-mapper-asl-1.9.11.jar" />
+        <resource-root path="jackson-core-asl-1.9.11.jar" />
+    </resources>
+	<dependencies>
+		<module name="org.apache.log4j"/>
+		<module name="javaee.api"/>
+		<module name="org.apache.commons.cli"/>
+    </dependencies>    
+</module>

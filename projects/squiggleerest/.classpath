@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="../../lib/avro/avro-1.7.7.jar"/>
+	<classpathentry kind="lib" path="../../lib/avro/avro-tools-1.7.7.jar"/>
+	<classpathentry kind="lib" path="../../lib/commons/math/commons-math3-3.3.jar"/>
+	<classpathentry kind="lib" path="../../lib/joda/joda-time-2.4.jar"/>
+	<classpathentry kind="lib" path="../../lib/log4j/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="/Users/AgnitioWorks/Documents/squigglee/lib/commons-lang3-3.4/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="/Applications/jboss-as-7.1.1.Final/modules/org/codehaus/jackson/jackson-jaxrs/main/jackson-jaxrs-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/Applications/jboss-as-7.1.1.Final/modules/org/jboss/resteasy/resteasy-jaxrs/main/resteasy-jaxrs-2.3.2.Final.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/squiggleecore"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/squiggleembb"/>
+	<classpathentry kind="lib" path="/Applications/jboss-as-7.1.1.Final/modules/org/jboss/resteasy/resteasy-jackson-provider/main/resteasy-jackson-provider-2.3.2.Final.jar"/>
+	<classpathentry kind="lib" path="/Applications/jboss-as-7.1.1.Final/modules/javax/ws/rs/api/main/jboss-jaxrs-api_1.1_spec-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/AgnitioWorks/Documents/squigglee/lib/httpcomponents/httpclient-4.1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/AgnitioWorks/Documents/squigglee/lib/httpcomponents/httpcore-4.1.4.jar"/>
+	<classpathentry kind="lib" path="/Users/AgnitioWorks/Documents/squigglee/lib/httpcomponents/httpmime-4.1.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/squiggleeext"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

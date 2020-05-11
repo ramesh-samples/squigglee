@@ -1,0 +1,41 @@
+- hosts: localhost
+  connection: local
+  gather_facts: True
+  vars:
+    ec2_access_key: "AKIAIQWKLMSGKA7YCSLA"
+    ec2_secret_key: "PiFhUX0D6sh863fS9Bd0kRYeFKeq1YpjfV+a7Cil"
+    keypair: "ec2tsrserver"    
+# Example create topology for one region 1 server deployment 
+    topology: [{"instance_type":"t2.medium","image":"ami-76817c1e","group":"awtsrserver1","region":"us-east-1","zone":"us-east-1a","vpc_subnet_id":"subnet-575b9520","token":"0","ring_position":"0","is_seed":"yes","is_bootstrap_node":"yes","Name":"Time Series Node TBD","replica_of":"0","storage":"10","stype":"Medium"}]
+  tasks:
+    - name: Launch Topology 
+      local_action: ec2 
+        image="{{ item['image'] }}" 
+        instance_type="{{ item['instance_type'] }}" 
+        aws_access_key="{{ ec2_access_key }}" 
+        aws_secret_key="{{ ec2_secret_key }}" 
+        keypair="{{ keypair }}" 
+        instance_tags='{"token":"{{ item['token'] }}","ring_position":"{{ item['ring_position'] }}","is_seed":"{{ item['is_seed'] }}","is_bootstrap_node":"{{ item['is_bootstrap_node'] }}","replica_of":"{{ item['replica_of'] }}","Name":"{{ item['Name'] }}","storage":"{{ item['storage'] }}","stype":"{{ item['stype'] }}"}' 
+        region="{{ item['region'] }}" 
+        vpc_subnet_id="{{ item['vpc_subnet_id'] }}" 
+        group="{{ item['group'] }}" 
+        count=1 
+        wait=True 
+      with_items: topology 
+#    - pause: minutes=2
+#- hosts: localhost
+#  connection: local
+#  gather_facts: True    
+#  tasks:
+#    - name: Refresh dynamic inventory cache 
+#      local_action: command hosts/ec2.py --refresh-cache
+#    - name: Refresh seed list
+#      local_action: shell hosts/ec2.py --list | python seeds.py
+#- hosts: ec2 
+#  vars:
+#    ec2_access_key: "AKIAIQWKLMSGKA7YCSLA"
+#    ec2_secret_key: "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"
+#  tasks:
+#    - wait_for: host={{ hostvars[inventory_hostname]['ec2_ip_address'] }} port=22 delay=60 timeout=320 state=started 
+#    - pause: minutes=2
+

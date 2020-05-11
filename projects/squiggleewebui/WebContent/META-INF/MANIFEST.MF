@@ -1,0 +1,1 @@
+Dependencies: com.squigglee.adapter.cassandra export

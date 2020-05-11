@@ -1,0 +1,19 @@
+- hosts: tag_ring_position_{{logicalNumber}}:&tag_cluster_{{cluster}}
+  user: ec2-user 
+  vars:
+    cassandra_version: "apache-cassandra-2.1.2"
+#    cassandra_version: "apache-cassandra-2.0.9"
+    jboss_version: "jboss-as-7.1.1.Final"
+    zk_version: "zookeeper-3.4.6"
+    cluster: "TSR_EC2_CLUST"
+  tasks:
+     - debug: msg="Starting Cassandra and JBOSS+TEIID at Logical Node = {{logicalNumber}}"
+#     - shell: "ps aux | grep c[a]ssandra | awk {'print $2'} | xargs sudo kill -9"
+#       ignore_errors: True  
+#     - command: sudo nohup /opt/{{ cassandra_version }}/bin/cassandra 
+     - shell: "ps aux | grep j[b]oss | awk {'print $2'} | xargs sudo kill -9"
+       ignore_errors: True  
+     - file: path="/opt/{{ jboss_version }}/standalone/deployments/TIMESERIESGLOBAL-vdb.xml" state="absent" 
+       sudo: yes 
+     - command: sudo rm -rf /opt/{{ jboss_version }}/standalone/tmp 
+     - command: sudo nohup /opt/{{ jboss_version }}/bin/standalone.sh --server-config standalone-teiid.xml -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0 -Dzookeeper.sasl.client=false & 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.0" name="com.squigglee.coordination">
+    <resources>
+        <resource-root path="squiggleecoord.jar" />
+        <resource-root path="squiggleecore.jar" />
+    </resources>
+	<dependencies>
+		<module name="org.joda.time"/>
+		<module name="org.apache.zookeeper"/>
+		<module name="org.apache.log4j"/>
+		<module name="org.apache.commons.lang3"/>
+    </dependencies>
+</module>

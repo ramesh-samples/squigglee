@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<!-- // Copyright (c) 2015 SQUIGGLEE LLC All Rights Reserved. -->
+<project name="Ant-Test" default="publishlocal" basedir=".">
+	
+	<property name="root.dir" location="../.." />
+	<property name="build.dir" location="." />
+	<property name="dist.dir" location="${root.dir}/published" />
+	<!-- <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/> -->
+	
+	<target name="publishlocal" depends="publishbootstrap">
+		<delete dir="/Applications/jboss-as-7.1.1.Final/modules/com/squigglee/adapter" failonerror="false" />
+		<copy todir="/Applications/jboss-as-7.1.1.Final/modules/com/squigglee/adapter">
+			<fileset dir="${dist.dir}/modules/com/squigglee/adapter" casesensitive="yes" />
+		</copy>
+		<copy todir="/Applications/jboss-as-7.1.1.Final/standalone/deployments" file="${dist.dir}/lib/squiggleerestui.war" />
+		<copy todir="/Applications/jboss-as-7.1.1.Final/standalone/deployments" file="${dist.dir}/lib/squiggleewebui.war" />
+		<copy todir="${dist.dir}" file="/Users/AgnitioWorks/Documents/tsr/ansible/LocalNodeProperties.config" />
+	</target>
+		
+	<target name="publishbootstrap" depends="deployprojectjars">
+		<copy todir="${dist.dir}">
+			<fileset dir="${build.dir}/ansiblescripts/ec2" casesensitive="yes">
+				<filename name="*.yml"/>
+			</fileset>
+			<fileset dir="${build.dir}/ansiblescripts/ec2" casesensitive="yes">
+				<filename name="*.sh"/>
+			</fileset>
+		</copy>
+		<copy todir="${dist.dir}/hosts">
+			<fileset dir="${build.dir}/ansiblescripts/hosts" casesensitive="yes" />
+		</copy>
+		<copy todir="${dist.dir}">
+			<fileset dir="${build.dir}/configfiles" casesensitive="yes" />
+		</copy>
+		<!-- <copy todir="${dist.dir}" file="${root.dir}/software/apache-cassandra-2.1.2-bin.tar.gz" /> -->
+		<copy todir="${dist.dir}" file="${root.dir}/software/jboss-as-7.1.1.Final.zip" />
+		<copy todir="${dist.dir}" file="${root.dir}/software/jdk-7u67-linux-x64.rpm" />
+		<copy todir="${dist.dir}" file="${root.dir}/software/teiid-8.3.0.Final-jboss-dist.zip" />
+		<copy todir="${dist.dir}" file="${root.dir}/software/zookeeper-3.5.0-alpha.tar.gz" />
+		<copy todir="${dist.dir}" file="${root.dir}/software/h2-2015-04-10.zip" />
+	</target>
+	
+	<target name="deployprojectjars" depends="buildprojectjars">
+		<mkdir dir="${dist.dir}/modules/com/squigglee/adapter/main"/>
+		<copy file="${build.dir}/jbossmodules/squigglee_adapter_module.xml" tofile="${dist.dir}/modules/com/squigglee/adapter/main/module.xml"/>
+		<copy file="${dist.dir}/lib/squiggleeadapter.jar" tofile="${dist.dir}/modules/com/squigglee/adapter/main/squiggleeadapter.jar"/>
+		<copy file="${dist.dir}/lib/squiggleecore.jar" tofile="${dist.dir}/modules/com/squigglee/adapter/main/squiggleecore.jar"/>
+		<copy file="${dist.dir}/lib/squiggleeext.jar" tofile="${dist.dir}/modules/com/squigglee/adapter/main/squiggleeext.jar"/>
+		<copy file="${dist.dir}/lib/squiggleerest.jar" tofile="${dist.dir}/modules/com/squigglee/adapter/main/squiggleerest.jar"/>
+		<copy file="${dist.dir}/lib/squiggleembb.jar" tofile="${dist.dir}/modules/com/squigglee/adapter/main/squiggleembb.jar"/>
+		<copy file="${dist.dir}/lib/squiggleecoord.jar" tofile="${dist.dir}/modules/com/squigglee/adapter/main/squiggleecoord.jar"/>
+		
+		<mkdir dir="${dist.dir}/modules/org/apache/zookeeper/main"/>
+		<copy file="${build.dir}/jbossmodules/zookeeper_module.xml" tofile="${dist.dir}/modules/org/apache/zookeeper/main/module.xml"/>
+		<copy file="${root.dir}/lib/zookeeper-3.5.0/zookeeper-3.5.0-alpha.jar" tofile="${dist.dir}/modules/org/apache/zookeeper/main/zookeeper-3.5.0-alpha.jar"/>
+		<copy file="${root.dir}/lib/zookeeper-3.5.0/slf4j-log4j12-1.7.5.jar" tofile="${dist.dir}/modules/org/apache/zookeeper/main/slf4j-log4j12-1.7.5.jar"/>
+		<copy file="${root.dir}/lib/zookeeper-3.5.0/slf4j-api-1.7.5.jar" tofile="${dist.dir}/modules/org/apache/zookeeper/main/slf4j-api-1.7.5.jar"/>
+		<copy file="${root.dir}/lib/zookeeper-3.5.0/servlet-api-2.5-20081211.jar" tofile="${dist.dir}/modules/org/apache/zookeeper/main/servlet-api-2.5-20081211.jar"/>
+		<copy file="${root.dir}/lib/zookeeper-3.5.0/netty-3.7.0.Final.jar" tofile="${dist.dir}/modules/org/apache/zookeeper/main/netty-3.7.0.Final.jar"/>
+		<copy file="${root.dir}/lib/zookeeper-3.5.0/jline-2.11.jar" tofile="${dist.dir}/modules/org/apache/zookeeper/main/jline-2.11.jar"/>
+		<copy file="${root.dir}/lib/zookeeper-3.5.0/javacc.jar" tofile="${dist.dir}/modules/org/apache/zookeeper/main/javacc.jar"/>
+		<copy file="${root.dir}/lib/zookeeper-3.5.0/jackson-mapper-asl-1.9.11.jar" tofile="${dist.dir}/modules/org/apache/zookeeper/main/jackson-mapper-asl-1.9.11.jar"/>
+		<copy file="${root.dir}/lib/zookeeper-3.5.0/jackson-core-asl-1.9.11.jar" tofile="${dist.dir}/modules/org/apache/zookeeper/main/jackson-core-asl-1.9.11.jar"/>
+
+		<mkdir dir="${dist.dir}/modules/org/joda/time/main"/>
+		<copy file="${build.dir}/jbossmodules/joda_module.xml" tofile="${dist.dir}/modules/org/joda/time/main/module.xml"/>
+		<copy file="${root.dir}/lib/joda/joda-time-2.4.jar" tofile="${dist.dir}/modules/org/joda/time/main/joda-time-2.4.jar"/>
+				
+		<mkdir dir="${dist.dir}/modules/org/apache/commons/math/main"/>
+		<copy file="${build.dir}/jbossmodules/commons_math_module.xml" tofile="${dist.dir}/modules/org/apache/commons/math/main/module.xml"/>
+		<copy file="${root.dir}/lib/commons/math/commons-math3-3.3.jar" tofile="${dist.dir}/modules/org/apache/commons/math/main/commons-math3-3.3.jar"/>
+		<copy file="${root.dir}/lib/commons/math/junit-4.4.jar" tofile="${dist.dir}/modules/org/apache/commons/math/main/junit-4.4.jar"/>
+		
+		<mkdir dir="${dist.dir}/modules/org/apache/log4j/main"/>
+		<copy file="${build.dir}/jbossmodules/log4j_module.xml" tofile="${dist.dir}/modules/org/apache/log4j/main/module.xml"/>
+		<copy file="${root.dir}/lib/log4j/log4j-1.2.16.jar" tofile="${dist.dir}/modules/org/apache/log4j/main/log4j-1.2.16.jar"/>
+		
+		<mkdir dir="${dist.dir}/modules/org/wso2/siddhi/main"/>
+		<copy file="${build.dir}/jbossmodules/siddhi_module.xml" tofile="${dist.dir}/modules/org/wso2/siddhi/main/module.xml"/>
+		<copy file="${root.dir}/lib/siddhi/siddhi-api_2.1.0.wso2v1.jar" tofile="${dist.dir}/modules/org/wso2/siddhi/main/siddhi-api_2.1.0.wso2v1.jar"/>
+		<copy file="${root.dir}/lib/siddhi/siddhi-core_2.1.0.wso2v1.jar" tofile="${dist.dir}/modules/org/wso2/siddhi/main/siddhi-core_2.1.0.wso2v1.jar"/>
+		<copy file="${root.dir}/lib/siddhi/siddhi-query_2.1.0.wso2v1.jar" tofile="${dist.dir}/modules/org/wso2/siddhi/main/siddhi-query_2.1.0.wso2v1.jar"/>
+		<copy file="${root.dir}/lib/siddhi/antlr-runtime_3.2.0.wso2v1.jar" tofile="${dist.dir}/modules/org/wso2/siddhi/main/antlr-runtime_3.2.0.wso2v1.jar"/>
+		
+		<mkdir dir="${dist.dir}/modules/org/apache/commons/lang3/main"/>
+		<copy file="${build.dir}/jbossmodules/commons_lang_module.xml" tofile="${dist.dir}/modules/org/apache/commons/lang3/main/module.xml"/>
+		<copy file="${root.dir}/lib/commons-lang3-3.4/commons-lang3-3.4.jar" tofile="${dist.dir}/modules/org/apache/commons/lang3/main/commons-lang3-3.4.jar"/>
+		
+		<mkdir dir="${dist.dir}/modules/org/apache/avro/main"/>
+		<copy file="${build.dir}/jbossmodules/avro_module.xml" tofile="${dist.dir}/modules/org/apache/avro/main/module.xml"/>
+		<copy file="${root.dir}/lib/avro/avro-1.7.7.jar" tofile="${dist.dir}/modules/org/apache/avro/main/avro-1.7.7.jar"/>
+		<copy file="${root.dir}/lib/avro/avro-compiler-1.7.6.jar" tofile="${dist.dir}/modules/org/apache/avro/main/avro-compiler-1.7.6.jar"/>
+		<copy file="${root.dir}/lib/avro/avro-tools-1.7.7.jar" tofile="${dist.dir}/modules/org/apache/avro/main/avro-tools-1.7.7.jar"/>
+		
+		<mkdir dir="${dist.dir}/modules/com/google/gson/main"/>
+		<copy file="${build.dir}/jbossmodules/gson_module.xml" tofile="${dist.dir}/modules/com/google/gson/main/module.xml"/>
+		<copy file="${root.dir}/lib/gson/gson-2.3.1.jar" tofile="${dist.dir}/modules/com/google/gson/main/gson-2.3.1.jar"/>
+		
+		<mkdir dir="${dist.dir}/modules/com/google/guava/main"/>
+		<copy file="${build.dir}/jbossmodules/guava_module.xml" tofile="${dist.dir}/modules/com/google/guava/main/module.xml"/>
+		<copy file="${root.dir}/lib/guava/guava-11.0.2.jar" tofile="${dist.dir}/modules/com/google/guava/main/guava-11.0.2.jar"/>
+		
+		<mkdir dir="${dist.dir}/modules/com/h2database/h2/main"/>
+		<copy file="${build.dir}/jbossmodules/h2_module.xml" tofile="${dist.dir}/modules/com/h2database/h2/main/module.xml"/>
+		<copy file="${root.dir}/lib/h2/h2-1.4.187.jar" tofile="${dist.dir}/modules/com/h2database/h2/main/h2-1.4.187.jar"/>
+		
+	</target>
+	
+	<path id="adapter.compile.classpath">
+		<fileset dir="${root.dir}/lib/teiid-dist" includes="**/*.jar" />
+		<fileset dir="${root.dir}/lib/avro" includes="**/*.jar" />
+		<fileset dir="${root.dir}/lib/joda" includes="**/*.jar" />
+		<fileset dir="${root.dir}/lib/log4j" includes="**/*.jar" />
+		<fileset dir="${root.dir}/lib/siddhi" includes="**/*.jar" />
+		<fileset dir="${root.dir}/lib/httpcomponents" includes="**/*.jar" />
+		<fileset dir="${dist.dir}/lib" includes="squiggleecore.jar" />
+		<fileset dir="${dist.dir}/lib" includes="squiggleerest.jar" />
+		<fileset dir="${dist.dir}/lib" includes="squiggleeext.jar" />
+		<fileset dir="${dist.dir}/lib" includes="squiggleembb.jar" />
+	</path>
+	
+	<target name="buildprojectjars" depends="copydependencies">
+		<mkdir dir="${dist.dir}/lib"/>
+
+		<jar destfile="${dist.dir}/lib/squiggleeext.jar" basedir="${root.dir}/projects/squiggleeext/target/classes"/>
+		<jar destfile="${dist.dir}/lib/squiggleecore.jar" basedir="${root.dir}/projects/squiggleecore/target/classes"/>
+		<jar destfile="${dist.dir}/lib/squiggleerest.jar" basedir="${root.dir}/projects/squiggleerest/target/classes"/>
+		<jar destfile="${dist.dir}/lib/squiggleembb.jar" basedir="${root.dir}/projects/squiggleembb/target/classes"/>
+		<jar destfile="${dist.dir}/lib/squiggleecoord.jar" basedir="${root.dir}/projects/squiggleecoord/bin"/>
+		<jar destfile="${dist.dir}/lib/squiggleecloud.jar" basedir="${root.dir}/projects/squiggleecloud/target/classes"/>		
+		<jar destfile="${dist.dir}/lib/squiggleetest.jar" basedir="${root.dir}/projects/squiggleetest/target/classes"/>
+
+		<mkdir dir="${dist.dir}/tmp/src"/>
+		<mkdir dir="${dist.dir}/tmp/build"/>
+		<copy todir="${dist.dir}/tmp/src">
+			<fileset dir="${root.dir}/projects/squiggleeadapter/src/main/java" />
+		</copy> 
+		<javac srcdir="${dist.dir}/tmp/src" destdir="${dist.dir}/tmp/build" includeAntRuntime="yes">
+			<classpath refid="adapter.compile.classpath"/>
+		</javac>
+		<copy todir="${dist.dir}/tmp/build/META-INF/services">
+			<fileset dir="${root.dir}/projects/squiggleeadapter/META-INF/services" />
+		</copy>
+		<jar destfile="${dist.dir}/lib/squiggleeadapter.jar" basedir="${dist.dir}/tmp/build" />
+		
+		<war destfile="${dist.dir}/lib/squiggleewebui.war" webxml="${root.dir}/projects/squiggleewebui/WebContent/WEB-INF/web.xml" >
+			<classes dir="${root.dir}/projects/squiggleewebui/build/classes" />
+			<fileset dir="${root.dir}/projects/squiggleewebui/WebContent/WEB-INF">
+				<exclude name="${root.dir}/projects/squiggleewebui/WebContent/WEB-INF/web.xml"/>
+			</fileset>
+			<fileset dir="${root.dir}/projects/squiggleewebui/WebContent" />
+		</war>
+
+		<war destfile="${dist.dir}/lib/squiggleerestui.war" webxml="${root.dir}/projects/squiggleerestui/WebContent/WEB-INF/web.xml" >
+			<classes dir="${root.dir}/projects/squiggleerestui/build/classes" />
+			<fileset dir="${root.dir}/projects/squiggleerestui/WebContent/WEB-INF">
+				<exclude name="${root.dir}/projects/squiggleerestui/WebContent/WEB-INF/web.xml"/>
+			</fileset>
+			<fileset dir="${root.dir}/projects/squiggleerestui/WebContent" />
+		</war>
+
+		<pathconvert property="tasks.classpath" pathsep=" ">
+			<path>
+				<fileset dir="${dist.dir}/lib" includes="**/*.jar" excludes="${dist.dir}/lib/squiggleetest.jar,${dist.dir}/lib/squiggleeadapter.jar,${dist.dir}/lib/squiggleewebui.jar,${dist.dir}/lib/squiggleerestui.jar" />
+			</path>
+			<chainedmapper>
+				<flattenmapper/>
+				<globmapper from="*.jar" to="lib/*.jar" casesensitive="no"/>
+			</chainedmapper>
+		</pathconvert>
+		
+		<jar destfile="${dist.dir}/squiggleejobs.jar">
+			<fileset dir="${root.dir}/projects/squiggleejobs/target/classes" />
+			<manifest>
+				<attribute name="Main-Class" value="com.squigglee.jobs.launchers.PingTaskLauncher"/>
+				<attribute name="Class-Path" value="${tasks.classpath}" />
+			</manifest>
+		</jar>
+				
+		<pathconvert property="client.classpath" pathsep=" ">
+			<path>
+				<fileset dir="${dist.dir}/lib" includes="**/*.jar" excludes="${dist.dir}/lib/squiggleetest.jar,${dist.dir}/lib/squiggleeadapter.jar,${dist.dir}/lib/squiggleewebui.jar,,${dist.dir}/lib/squiggleerestui.jar,${dist.dir}/lib/squiggleecloud.jar,${dist.dir}/lib/squiggleejobs.jar" />
+			</path>
+			<chainedmapper>
+				<flattenmapper/>
+				<globmapper from="*.jar" to="lib/*.jar" casesensitive="no"/>
+			</chainedmapper>
+		</pathconvert>
+
+		<jar destfile="${dist.dir}/squiggleeclient.jar">
+			<fileset dir="${root.dir}/projects/squiggleeclient/target/classes" />
+			<manifest>
+				<attribute name="Main-Class" value="com.squigglee.client.DirectBulkDataInsert"/>
+				<attribute name="Class-Path" value="${client.classpath}" />
+			</manifest>
+		</jar>
+		
+		<delete dir="${dist.dir}/tmp" />
+	 </target>
+	
+	<target name="copydependencies" depends="clean" >
+		<mkdir dir="${dist.dir}" />
+		<copy todir="${dist.dir}/lib">
+			<fileset dir="${root.dir}/lib" includes="**/*.jar" excludes="teiid-8.8.0.Final-embedded-dist/**/*.jar" />
+			<fileset dir="${root.dir}/lib" includes="teiid-8.8.0.Final-embedded-dist/lib/teiid-client-8.8.0.Final.jar,teiid-8.8.0.Final-embedded-dist/lib/teiid-common-core-8.8.0.Final.jar" />
+			<flattenmapper/>
+		</copy>
+	</target>
+	
+	<target name="clean">
+		<delete>
+			<fileset dir="${dist.dir}" casesensitive="yes">
+		  		<include name="**/*"/>
+				<exclude name="jboss-as-7.1.1.Final.zip"/>
+				<exclude name="jdk-7u67-linux-x64.rpm"/>
+				<exclude name="teiid-8.3.0.Final-jboss-dist.zip"/>
+				<exclude name="zookeeper-3.5.0-alpha.tar.gz"/>
+				<exclude name="h2-2015-04-10.zip"/>
+			</fileset>
+		</delete>
+		<!-- <delete dir="${dist.dir}" failonerror="false" /> -->
+	</target>
+</project> 

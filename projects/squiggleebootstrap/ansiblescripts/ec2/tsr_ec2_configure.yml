@@ -1,0 +1,23 @@
+- hosts: localhost
+  connection: local
+  gather_facts: True    
+  tasks:
+    - name: Refresh dynamic inventory cache 
+      local_action: command python hosts/ec2.py --refresh-cache
+    - name: Generate zookeeper dynamic configuration files
+      local_action: shell python hosts/ec2.py --list | python seeds.py {{cluster}} {{ logicalNumber }} {{ replicaOf }} 
+    - debug: var=cluster
+    - debug: var=logicalNumber
+- include: tsr_ec2_services_stopnode.yml    
+- include: tsr_ec2_conf_vols.yml
+- include: tsr_ec2_conf_prereq.yml
+#- include: tsr_ec2_conf_cass.yml
+- include: tsr_ec2_conf_jboss.yml
+- include: tsr_ec2_conf_zk.yml
+- include: tsr_ec2_conf_zk_overlay.yml
+- include: tsr_ec2_conf_tsr.yml
+- include: tsr_ec2_startzkall.yml
+- include: tsr_ec2_startnode.yml
+#- include: tsr_ec2_setschema.yml
+- include: tsr_ec2_services_startnode.yml
+- include: tsr_ec2_services_configuration.yml

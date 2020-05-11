@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="../../lib/joda/joda-time-2.4.jar"/>
+	<classpathentry kind="lib" path="../../lib/log4j/log4j-1.2.16.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/squiggleecloud"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/squiggleecore"/>
+	<classpathentry kind="lib" path="../../lib/teiid-8.8.0.Final-embedded-dist/lib/teiid-client-8.8.0.Final.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/squiggleecoord"/>
+	<classpathentry kind="lib" path="/Users/AgnitioWorks/Documents/squigglee/lib/zookeeper-3.5.0/zookeeper-3.5.0-alpha.jar"/>
+	<classpathentry kind="lib" path="/Users/AgnitioWorks/Documents/squigglee/lib/siddhi/antlr-runtime_3.2.0.wso2v1.jar"/>
+	<classpathentry kind="lib" path="/Users/AgnitioWorks/Documents/squigglee/lib/siddhi/siddhi-api_2.1.0.wso2v1.jar"/>
+	<classpathentry kind="lib" path="/Users/AgnitioWorks/Documents/squigglee/lib/siddhi/siddhi-core_2.1.0.wso2v1.jar"/>
+	<classpathentry kind="lib" path="/Users/AgnitioWorks/Documents/squigglee/lib/siddhi/siddhi-query_2.1.0.wso2v1.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

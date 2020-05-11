@@ -1,0 +1,71 @@
+#- hosts: localhost
+#  connection: local
+#  gather_facts: True    
+#  tasks:
+#    - name: Refresh dynamic inventory cache 
+#      local_action: python command hosts/ec2.py --refresh-cache
+#    - name: Refresh seed list
+#      local_action: shell python hosts/ec2.py --list | python seeds.py
+#- hosts: ec2 
+- hosts: tag_ring_position_{{logicalNumber}}:&tag_cluster_{{cluster}}
+  user: ec2-user 
+  vars:
+    ec2_access_key: "AKIAIQWKLMSGKA7YCSLA"
+    ec2_secret_key: "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"
+    cluster: "TSR_EC2_CLUST"
+    dataVolName: "/data"
+    logVolName: "/log"
+    cassandra_version: "apache-cassandra-2.1.2"
+#    cassandra_version: "apache-cassandra-2.0.9"    
+    cassandra_file: "apache-cassandra-2.1.2-bin.tar.gz"
+#    cassandra_file: "apache-cassandra-2.0.9-bin.tar.gz"
+    #cassandra_mirror: "http://apache.cs.utah.edu/cassandra/2.1.2/" 
+    cassandra_mirror: "http://apache.claz.org/cassandra/2.1.2/" 
+    seeds: '{{groups["tag_is_seed_yes"] | join(",")}}'
+  tasks:
+    - debug: msg="Configuring Cassandra at Logical Node = {{logicalNumber}}"  
+#    - debug: var=logicalNumber
+    - stat: path="/opt/{{ cassandra_version }}" 
+      register: cassandra 
+      sudo: yes      
+#    - command: "sudo wget {{ cassandra_mirror }}{{ cassandra_file }} creates={{ cassandra_file }}" 
+#      when: cassandra.stat.isdir is not defined or cassandra.stat.isdir != true 
+    - copy: src="./{{ cassandra_version }}-bin.tar.gz" dest="/home/ec2-user" force="yes" owner="ec2-user" group="ec2-user" mode="0744"
+    - command: "sudo tar -xzvf {{ cassandra_file }} " 
+      when: (cassandra.stat.isdir is not defined or cassandra.stat.isdir != true) 
+    - command: "sudo mv {{ cassandra_version }} /opt "
+      when: (cassandra.stat.isdir is not defined or cassandra.stat.isdir != true) 
+    - command: "sudo mkdir -p {{ dataVolName }}/cassandra/data {{ logVolName }}/cassandra/commitlog {{ logVolName }}/cassandra/saved_caches {{ logVolName }}/cassandra/log" 
+      when: (cassandra.stat.isdir is not defined or cassandra.stat.isdir != true)
+    - copy: src="./log4j-server_master.properties" dest="/opt/{{ cassandra_version }}/conf/log4j-server.properties" force="yes" owner="ec2-user" group="ec2-user" mode="0644" 
+      when: (cassandra.stat.isdir is not defined or cassandra.stat.isdir != true)  
+      sudo: yes
+    - copy: src="./cassandra_master.yaml" dest="/opt/{{ cassandra_version }}/conf/cassandra.yaml" force="yes" owner="ec2-user" group="ec2-user" mode="0644" 
+      when: (cassandra.stat.isdir is not defined or cassandra.stat.isdir != true)
+      sudo: yes 
+    - lineinfile: dest=/opt/{{ cassandra_version }}/conf/cassandra.yaml state=present backrefs=yes regexp='^initial_token' line="initial_token{{':'}} {{ hostvars[inventory_hostname]['ec2_tag_token'] }}" 
+      sudo: yes       
+    - lineinfile: dest=/opt/{{ cassandra_version }}/conf/cassandra.yaml state=present backrefs=yes regexp='^listen_address' line="listen_address{{':'}} {{ hostvars[inventory_hostname]['ec2_private_ip_address'] }}" 
+      sudo: yes 
+    - lineinfile: dest=/opt/{{ cassandra_version }}/conf/cassandra.yaml state=present backrefs=yes regexp='^broadcast_address' line="broadcast_address{{':'}} {{ hostvars[inventory_hostname]['ec2_ip_address'] }}" 
+      sudo: yes 
+    - lineinfile: dest=/opt/{{ cassandra_version }}/conf/cassandra.yaml state=present backrefs=yes regexp='^cluster_name' line="cluster_name{{':'}} '{{ hostvars[inventory_hostname]['ec2_tag_cluster'] }}'" 
+      sudo: yes 
+    - copy: src="./cassandra-rackdc_master.properties" dest="/opt/{{ cassandra_version }}/conf/cassandra-rackdc.properties" force="yes" owner="ec2-user" mode="0644" 
+      when: (cassandra.stat.isdir is not defined or cassandra.stat.isdir != true)
+      sudo: yes 
+    - lineinfile: dest=/opt/{{ cassandra_version }}/conf/cassandra.yaml state=present backrefs=yes regexp='- seeds' line="          - seeds{{':'}} {{ seeds }}" 
+      sudo: yes
+    - lineinfile: dest=/opt/{{ cassandra_version }}/conf/cassandra.yaml state=present backrefs=yes regexp='^auto_bootstrap' line="auto_bootstrap{{':'}} false" 
+      when: (hostvars[inventory_hostname]["ec2_tag_is_bootstrap_node"] == 'yes')
+      sudo: yes
+# Configure Java Native Access      
+    - stat: path=/opt/{{ cassandra_version }}/lib/jna.jar 
+      register: jnajar 
+      sudo: yes 
+    - command: wget https://github.com/twall/jna/blob/master/dist/jna.jar 
+      when: (jnajar.stat.exists == false)  
+    - command: sudo cp ./jna.jar /usr/share/java  
+      when: (jnajar.stat.exists == false)  
+    - command: sudo mv ./jna.jar /opt/{{ cassandra_version }}/lib  
+      when: (jnajar.stat.exists == false) 

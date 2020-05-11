@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--  // Copyright (c) 2015 SQUIGGLEE LLC All Rights Reserved. -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script language="javascript" type="text/javascript" src="common.js"></script>
+<script language="javascript" type="text/javascript" src="d3.min.js"></script>
+<script language="javascript" type="text/javascript" src="jquery-2.1.3.min.js"></script>
+<link href="TsrWeb.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="white">
+<script language="javascript" >
+	setClusterStatusSync();
+	//setClusterStatusASync();
+	pageLoad = true;
+	pageUpdateFunction = function() {};	
+	//page update function must be overridden/set by child pages since common page has no view e.g. 
+	//pageUpdateFunction = setOpsView(); //example for the operate page
+	statusTimer = setInterval(function(){ setClusterStatusASync();}, 20000);
+</script>
+</body>
+</html>
