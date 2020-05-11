@@ -1,9 +1,0 @@
-- hosts: tag_cluster_{{cluster}} 
-  gather_facts: True
-  user: ec2-user 
-  vars:
-  tasks:
-     - shell: "nohup java -jar squiggleeclient.jar -b 2015-05-20T00:00:00.000Z -e 2015-05-20T00:59:59.999Z -m ZIPF -z 1000 -i SampleZipf -l {{hostvars[inventory_hostname]['ec2_tag_ring_position']}} -d int -x 1 -o 0 &"
-       args:
-         chdir: /opt/tsr/services
-       when: ({{hostvars[inventory_hostname]['ec2_tag_ring_position']}} == {{hostvars[inventory_hostname]['ec2_tag_replica_of']}} and {{hostvars[inventory_hostname]['ec2_tag_ring_position']}} != 0)

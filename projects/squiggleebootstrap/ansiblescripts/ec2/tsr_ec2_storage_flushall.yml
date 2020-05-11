@@ -1,6 +1,0 @@
-- hosts: tag_cluster_{{cluster}} 
-  user: ec2-user 
-  vars:
-  tasks:
-     - shell: "/opt/apache-cassandra-2.1.2/bin/nodetool flush"
-       sudo: yes
